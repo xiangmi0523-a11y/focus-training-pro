@@ -1,0 +1,12 @@
+{
+  "appId": "com.focustraining.pro",
+  "appName": "专注力训练 Pro",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "StatusBar": {
+      "backgroundColor": "#160d08",
+      "style": "DARK"
+    }
+  }
+}
