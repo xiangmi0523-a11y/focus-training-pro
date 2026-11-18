@@ -1,5 +1,16 @@
-node_modules/
-dist/
-android/
-.DS_Store
+# 由 XcodeGen 生成
+*.xcodeproj
+App/Info.plist
+# 构建产物
+build/
+Payload/
+*.ipa
 *.log
+shots/
+.build/
+BrainCore/.build/
+.swiftpm/
+DerivedData/
+# CI 打包时生成的字体子集
+App/Resources/Fonts/*.otf
+.DS_Store

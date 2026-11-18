@@ -1,0 +1,159 @@
+name: iOS 构建
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "发布 Release"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    env:
+      APP_NAME: XiaomiBrain
+      BUNDLE_ID: com.xiaomi.brain
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 选择最新 Xcode
+        run: |
+          ls -d /Applications/Xcode*.app || true
+          XCODE=$(ls -d /Applications/Xcode_*.app 2>/dev/null | grep -v -i beta | sort -V | tail -1)
+          if [ -z "$XCODE" ]; then XCODE=/Applications/Xcode.app; fi
+          echo "使用 $XCODE"
+          sudo xcode-select -s "$XCODE/Contents/Developer"
+          xcodebuild -version
+          swift --version
+
+      - name: 核心逻辑单元测试
+        working-directory: BrainCore
+        run: swift test 2>&1 | tee ../core-tests.log
+
+      - name: 准备宋体（思源宋体子集）
+        continue-on-error: true
+        run: |
+          mkdir -p /tmp/fonts
+          for w in Regular Bold; do
+            curl -fsSL --retry 3 -o /tmp/fonts/NotoSerifSC-$w.otf \
+              "https://github.com/notofonts/noto-cjk/raw/main/Serif/SubsetOTF/SC/NotoSerifSC-$w.otf"
+          done
+          python3 -m pip install --quiet --break-system-packages fonttools || python3 -m pip install --quiet fonttools
+          python3 scripts/subset_fonts.py /tmp/fonts App/Resources/Fonts
+          ls -la App/Resources/Fonts
+
+      - name: 生成 Xcode 工程
+        run: |
+          brew install xcodegen >/dev/null 2>&1 || brew install xcodegen
+          xcodegen generate
+
+      - name: 选择模拟器
+        id: sim
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json,sys
+          d=json.load(sys.stdin)["devices"]
+          best=None
+          for rt,devs in d.items():
+              if "iOS" not in rt: continue
+              for x in devs:
+                  if not x["name"].startswith("iPhone"): continue
+                  score=(rt, "Pro" in x["name"] and "Max" not in x["name"], x["name"])
+                  if best is None or score>best[0]: best=(score,x["udid"],x["name"],rt)
+          print(best[1]); print(best[2], best[3], file=sys.stderr)
+          ')
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+
+      - name: 编译（模拟器）
+        run: |
+          set -o pipefail
+          xcodebuild -project $APP_NAME.xcodeproj -scheme $APP_NAME -configuration Debug \
+            -sdk iphonesimulator -destination "id=${{ steps.sim.outputs.udid }}" \
+            -derivedDataPath build/sim CODE_SIGNING_ALLOWED=NO build 2>&1 | tee sim-build.log | grep -E "error:|warning: unre|BUILD" || true
+          test -d build/sim/Build/Products/Debug-iphonesimulator/$APP_NAME.app || { grep -E "error:" sim-build.log | sort -u | head -80; exit 1; }
+
+      - name: 模拟器截图
+        run: |
+          UDID=${{ steps.sim.outputs.udid }}
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 || true
+          xcrun simctl install "$UDID" build/sim/Build/Products/Debug-iphonesimulator/$APP_NAME.app
+          mkdir -p shots
+          shot() { # 名称 等待秒数 参数...
+            name=$1; wait=$2; shift 2
+            xcrun simctl launch --terminate-running-process "$UDID" $BUNDLE_ID "$@" >/dev/null
+            sleep "$wait"
+            xcrun simctl io "$UDID" screenshot "shots/$name.png" >/dev/null 2>&1 || true
+          }
+          shot 00-launch 2.2
+          shot 01-home 3 -demo home -demoData
+          shot 02-detail-schulte 3 -demo detail -demoKind schulte -demoData
+          shot 03-detail-story 3 -demo detail -demoKind story -demoData
+          shot 04-daily 3 -demo daily -demoData
+          shot 05-stats 3.5 -demo stats -demoData
+          shot 06-settings 3 -demo settings -demoData
+          shot 10-schulte 5 -demo game -demoMode schulteClassic -demoData
+          shot 11-schulte-gorbov 5 -demo game -demoMode schulteGorbov -demoData
+          shot 12-schulte-poem 5 -demo game -demoMode schultePoem -demoData
+          shot 13-stroop 5 -demo game -demoMode stroopColor -demoData
+          shot 14-stroop-switch 6 -demo game -demoMode stroopSwitch -demoData
+          shot 15-stroop-direction 5 -demo game -demoMode stroopDirection -demoData
+          shot 20-memory 6 -demo game -demoMode memoryOrdered -demoData
+          shot 21-memory-change 6 -demo game -demoMode memoryChange -demoData
+          shot 30-digits 6 -demo game -demoMode digitsCocktail -demoData
+          shot 40-mirror 5 -demo game -demoMode mirrorSymmetric -demoData
+          shot 41-rhythm 6 -demo game -demoMode mirrorRhythm -demoData
+          shot 50-sort 5 -demo game -demoMode sortSwitch -demoData
+          shot 51-sort-hidden 5 -demo game -demoMode sortHidden -demoData
+          shot 60-story 5 -demo game -demoMode storyChain -demoData
+          shot 61-story-number 5 -demo game -demoMode storyNumber -demoData
+          shot 05-ready 1 -demo game -demoMode stroopCount -demoData
+          ls shots
+
+      - name: 编译 IPA（未签名，用全能签安装）
+        run: |
+          set -o pipefail
+          BUILD_NO=${{ github.run_number }}
+          xcodebuild -project $APP_NAME.xcodeproj -scheme $APP_NAME -configuration Release \
+            -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build/dev \
+            MARKETING_VERSION=1.0.$BUILD_NO CURRENT_PROJECT_VERSION=$BUILD_NO \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build 2>&1 | tee dev-build.log | grep -E "error:|BUILD" || true
+          APP=build/dev/Build/Products/Release-iphoneos/$APP_NAME.app
+          test -d "$APP" || { grep -E "error:" dev-build.log | sort -u | head -80; exit 1; }
+          rm -rf Payload && mkdir Payload && cp -R "$APP" Payload/
+          zip -qry XiaomiBrain-1.0.$BUILD_NO.ipa Payload
+          ls -la *.ipa
+          echo "IPA=XiaomiBrain-1.0.$BUILD_NO.ipa" >> "$GITHUB_ENV"
+          echo "VERSION=1.0.$BUILD_NO" >> "$GITHUB_ENV"
+
+      - name: 上传构建产物
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ github.run_number }}
+          path: |
+            shots/*.png
+            *.ipa
+            *.log
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: 发布 Release
+        if: success() && (contains(github.event.head_commit.message, '[release]') || inputs.release)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v$VERSION" "$IPA" --title "晓米脑力 v$VERSION" \
+            --notes "晓米脑力 v$VERSION · 未签名 IPA，用全能签签名安装。" --latest
