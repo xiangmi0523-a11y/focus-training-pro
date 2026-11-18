@@ -74,6 +74,8 @@ jobs:
           print(best[1]); print(best[2], best[3], file=sys.stderr)
           ')
           echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+          # 提前在后台启动模拟器（首次启动要好几分钟），和编译并行
+          nohup xcrun simctl boot "$UDID" > /tmp/boot.log 2>&1 &
 
       - name: 编译（模拟器）
         run: |
@@ -85,17 +87,15 @@ jobs:
 
       - name: 模拟器截图
         continue-on-error: true
-        timeout-minutes: 14
+        timeout-minutes: 20
         run: |
           UDID=${{ steps.sim.outputs.udid }}
           t() { perl -e 'alarm shift; exec @ARGV' "$@"; }   # 给每条命令加超时
-          echo "启动模拟器 $(date +%T)"
-          t 120 xcrun simctl boot "$UDID" || true
-          for i in $(seq 1 60); do
-            xcrun simctl list devices | grep "$UDID" | grep -q Booted && break
-            sleep 2
-          done
-          sleep 15
+          echo "等待模拟器 $(date +%T)"
+          t 480 xcrun simctl bootstatus "$UDID" -b > /tmp/bootstatus.log 2>&1 || echo "bootstatus 超时"
+          tail -3 /tmp/bootstatus.log || true
+          xcrun simctl list devices | grep "$UDID" || true
+          sleep 8
           echo "已启动 $(date +%T)"
           t 30 xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 || true
           t 120 xcrun simctl install "$UDID" build/sim/Build/Products/Debug-iphonesimulator/$APP_NAME.app
