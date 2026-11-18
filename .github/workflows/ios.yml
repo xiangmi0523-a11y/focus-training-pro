@@ -84,18 +84,30 @@ jobs:
           test -d build/sim/Build/Products/Debug-iphonesimulator/$APP_NAME.app || { grep -E "error:" sim-build.log | sort -u | head -80; exit 1; }
 
       - name: 模拟器截图
+        continue-on-error: true
+        timeout-minutes: 14
         run: |
           UDID=${{ steps.sim.outputs.udid }}
-          xcrun simctl boot "$UDID" || true
-          xcrun simctl bootstatus "$UDID" -b
-          xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 || true
-          xcrun simctl install "$UDID" build/sim/Build/Products/Debug-iphonesimulator/$APP_NAME.app
+          t() { perl -e 'alarm shift; exec @ARGV' "$@"; }   # 给每条命令加超时
+          echo "启动模拟器 $(date +%T)"
+          t 120 xcrun simctl boot "$UDID" || true
+          for i in $(seq 1 60); do
+            xcrun simctl list devices | grep "$UDID" | grep -q Booted && break
+            sleep 2
+          done
+          sleep 15
+          echo "已启动 $(date +%T)"
+          t 30 xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 || true
+          t 120 xcrun simctl install "$UDID" build/sim/Build/Products/Debug-iphonesimulator/$APP_NAME.app
+          echo "已安装 $(date +%T)"
           mkdir -p shots
           shot() { # 名称 等待秒数 参数...
             name=$1; wait=$2; shift 2
-            xcrun simctl launch --terminate-running-process "$UDID" $BUNDLE_ID "$@" >/dev/null
+            t 40 xcrun simctl terminate "$UDID" $BUNDLE_ID >/dev/null 2>&1 || true
+            t 40 xcrun simctl launch "$UDID" $BUNDLE_ID "$@" >/dev/null || echo "启动失败 $name"
             sleep "$wait"
-            xcrun simctl io "$UDID" screenshot "shots/$name.png" >/dev/null 2>&1 || true
+            t 40 xcrun simctl io "$UDID" screenshot "shots/$name.png" >/dev/null 2>&1 || echo "截图失败 $name"
+            echo "$name $(date +%T)"
           }
           shot 00-launch 2.2
           shot 01-home 3 -demo home -demoData
@@ -104,6 +116,7 @@ jobs:
           shot 04-daily 3 -demo daily -demoData
           shot 05-stats 3.5 -demo stats -demoData
           shot 06-settings 3 -demo settings -demoData
+          shot 07-ready 1 -demo game -demoMode stroopCount -demoData
           shot 10-schulte 5 -demo game -demoMode schulteClassic -demoData
           shot 11-schulte-gorbov 5 -demo game -demoMode schulteGorbov -demoData
           shot 12-schulte-poem 5 -demo game -demoMode schultePoem -demoData
@@ -119,7 +132,6 @@ jobs:
           shot 51-sort-hidden 5 -demo game -demoMode sortHidden -demoData
           shot 60-story 5 -demo game -demoMode storyChain -demoData
           shot 61-story-number 5 -demo game -demoMode storyNumber -demoData
-          shot 05-ready 1 -demo game -demoMode stroopCount -demoData
           ls shots
 
       - name: 编译 IPA（未签名，用全能签安装）
