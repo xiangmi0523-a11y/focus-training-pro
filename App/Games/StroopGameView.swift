@@ -44,7 +44,12 @@ struct StroopGameView: View {
         ZStack {
             VStack(spacing: 14) {
                 instructionBar
-                if usesGrid { gridStage } else { singleStage }
+                if usesGrid {
+                    Spacer(minLength: 0)
+                    gridStage
+                } else {
+                    singleStage
+                }
                 Spacer(minLength: 0)
                 if voiceOn { voiceBar }
                 answerButtons
