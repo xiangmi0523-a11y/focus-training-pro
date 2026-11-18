@@ -1,0 +1,5 @@
+/Users/runner/work/focus-training-pro/focus-training-pro/App/Services/DigitAudio.swift:117:26: warning: consider using asynchronous alternative function
+/Users/runner/work/focus-training-pro/focus-training-pro/App/Services/DigitAudio.swift:118:60: warning: consider using asynchronous alternative function
+/Users/runner/work/focus-training-pro/focus-training-pro/App/Services/DigitAudio.swift:163:17: warning: capture of 'synth' with non-Sendable type 'AVSpeechSynthesizer' in a '@Sendable' closure
+/Users/runner/work/focus-training-pro/focus-training-pro/App/Services/DigitAudio.swift:163:29: warning: capture of 'utterance' with non-Sendable type 'AVSpeechUtterance' in a '@Sendable' closure
+2026-11-18 17:49:01.648 appintentsmetadataprocessor[3937:17019] warning: Metadata extraction skipped. No AppIntents.framework dependency found.

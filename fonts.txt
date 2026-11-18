@@ -1,0 +1,7 @@
+total 1856
+drwxr-xr-x  5 runner  staff     160 Nov 18 17:47 .
+drwxr-xr-x  3 runner  staff      96 Nov 18 17:46 ..
+-rw-r--r--  1 runner  staff       0 Nov 18 17:46 .gitkeep
+-rw-r--r--  1 runner  staff  476516 Nov 18 17:47 NotoSerifSC-Bold.otf
+-rw-r--r--  1 runner  staff  469260 Nov 18 17:47 NotoSerifSC-Regular.otf
+-rw-r--r--  1 runner  staff  2263886 Nov 18 18:02 XiaomiBrain-1.0.8.ipa

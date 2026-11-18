@@ -1,0 +1,125 @@
+Building for debugging...
+[0/7] Write sources
+[0/7] /Users/runner/work/focus-training-pro/focus-training-pro/BrainCore/.build/arm64-apple-macosx/debug/BrainCorePackageTests.derived/runner.swift
+[2/7] Write sources
+[4/7] Write swift-version-7974D3F7F03D5E95.txt
+[6/16] Compiling BrainCore Digits.swift
+[7/16] Compiling BrainCore Items.swift
+[8/16] Compiling BrainCore Memory.swift
+[9/16] Compiling BrainCore Mirror.swift
+[10/16] Emitting module BrainCore
+[11/16] Compiling BrainCore Progress.swift
+[12/16] Compiling BrainCore RNG.swift
+[13/16] Compiling BrainCore Schulte.swift
+[14/16] Compiling BrainCore Sorting.swift
+[15/19] Compiling BrainCore Story.swift
+[16/19] Compiling BrainCore Stroop.swift
+[17/19] Compiling BrainCore Training.swift
+[18/21] Emitting module BrainCoreTests
+[19/21] Compiling BrainCoreTests BrainCoreTests.swift
+[20/23] Compiling BrainCorePackageTests runner.swift
+[21/23] Emitting module BrainCorePackageTests
+[21/23] Write Objects.LinkFileList
+[22/23] Linking BrainCorePackageTests
+Build complete! (24.80s)
+Test Suite 'All tests' started at 2026-11-18 17:47:03.960.
+Test Suite 'BrainCorePackageTests.xctest' started at 2026-11-18 17:47:03.962.
+Test Suite 'DigitsTests' started at 2026-11-18 17:47:03.962.
+Test Case '-[BrainCoreTests.DigitsTests testExpected]' started.
+Test Case '-[BrainCoreTests.DigitsTests testExpected]' passed (0.002 seconds).
+Test Case '-[BrainCoreTests.DigitsTests testLengthGrows]' started.
+Test Case '-[BrainCoreTests.DigitsTests testLengthGrows]' passed (0.000 seconds).
+Test Case '-[BrainCoreTests.DigitsTests testSequenceRules]' started.
+Test Case '-[BrainCoreTests.DigitsTests testSequenceRules]' passed (0.002 seconds).
+Test Suite 'DigitsTests' passed at 2026-11-18 17:47:03.967.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.005 (0.005) seconds
+Test Suite 'LevelAndProgressTests' started at 2026-11-18 17:47:03.967.
+Test Case '-[BrainCoreTests.LevelAndProgressTests testApplyRecordUpdatesLevelBestAndDaily]' started.
+Test Case '-[BrainCoreTests.LevelAndProgressTests testApplyRecordUpdatesLevelBestAndDaily]' passed (0.001 seconds).
+Test Case '-[BrainCoreTests.LevelAndProgressTests testDailyPlanIsStableAndDistinct]' started.
+Test Case '-[BrainCoreTests.LevelAndProgressTests testDailyPlanIsStableAndDistinct]' passed (0.001 seconds).
+Test Case '-[BrainCoreTests.LevelAndProgressTests testEveryKindHasModesAndFirstModeUnlocked]' started.
+Test Case '-[BrainCoreTests.LevelAndProgressTests testEveryKindHasModesAndFirstModeUnlocked]' passed (0.000 seconds).
+Test Case '-[BrainCoreTests.LevelAndProgressTests testLevelStaircase]' started.
+Test Case '-[BrainCoreTests.LevelAndProgressTests testLevelStaircase]' passed (0.000 seconds).
+Test Case '-[BrainCoreTests.LevelAndProgressTests testPendingStoryWindow]' started.
+Test Case '-[BrainCoreTests.LevelAndProgressTests testPendingStoryWindow]' passed (0.000 seconds).
+Test Case '-[BrainCoreTests.LevelAndProgressTests testProgressCodableRoundTrip]' started.
+Test Case '-[BrainCoreTests.LevelAndProgressTests testProgressCodableRoundTrip]' passed (0.002 seconds).
+Test Case '-[BrainCoreTests.LevelAndProgressTests testStreakCountsConsecutiveDays]' started.
+Test Case '-[BrainCoreTests.LevelAndProgressTests testStreakCountsConsecutiveDays]' passed (0.000 seconds).
+Test Suite 'LevelAndProgressTests' passed at 2026-11-18 17:47:03.973.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.004 (0.006) seconds
+Test Suite 'MemoryAndStoryTests' started at 2026-11-18 17:47:03.973.
+Test Case '-[BrainCoreTests.MemoryAndStoryTests testArithmetic]' started.
+Test Case '-[BrainCoreTests.MemoryAndStoryTests testArithmetic]' passed (0.001 seconds).
+Test Case '-[BrainCoreTests.MemoryAndStoryTests testCatalogIDsUnique]' started.
+Test Case '-[BrainCoreTests.MemoryAndStoryTests testCatalogIDsUnique]' passed (0.000 seconds).
+Test Case '-[BrainCoreTests.MemoryAndStoryTests testChangeRound]' started.
+Test Case '-[BrainCoreTests.MemoryAndStoryTests testChangeRound]' passed (0.005 seconds).
+Test Case '-[BrainCoreTests.MemoryAndStoryTests testOrderedAccuracy]' started.
+Test Case '-[BrainCoreTests.MemoryAndStoryTests testOrderedAccuracy]' passed (0.000 seconds).
+Test Case '-[BrainCoreTests.MemoryAndStoryTests testProbes]' started.
+Test Case '-[BrainCoreTests.MemoryAndStoryTests testProbes]' passed (0.000 seconds).
+Test Case '-[BrainCoreTests.MemoryAndStoryTests testStoryAndCues]' started.
+Test Case '-[BrainCoreTests.MemoryAndStoryTests testStoryAndCues]' passed (0.001 seconds).
+Test Case '-[BrainCoreTests.MemoryAndStoryTests testStudyAndCandidates]' started.
+Test Case '-[BrainCoreTests.MemoryAndStoryTests testStudyAndCandidates]' passed (0.001 seconds).
+Test Suite 'MemoryAndStoryTests' passed at 2026-11-18 17:47:03.982.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.008 (0.009) seconds
+Test Suite 'MirrorTests' started at 2026-11-18 17:47:03.982.
+Test Case '-[BrainCoreTests.MirrorTests testPerfectTraceScoresHigh]' started.
+Test Case '-[BrainCoreTests.MirrorTests testPerfectTraceScoresHigh]' passed (0.013 seconds).
+Test Case '-[BrainCoreTests.MirrorTests testRhythm]' started.
+Test Case '-[BrainCoreTests.MirrorTests testRhythm]' passed (0.000 seconds).
+Test Case '-[BrainCoreTests.MirrorTests testScribbleScoresLow]' started.
+Test Case '-[BrainCoreTests.MirrorTests testScribbleScoresLow]' passed (0.004 seconds).
+Test Case '-[BrainCoreTests.MirrorTests testShapesInUnitSquare]' started.
+Test Case '-[BrainCoreTests.MirrorTests testShapesInUnitSquare]' passed (0.001 seconds).
+Test Case '-[BrainCoreTests.MirrorTests testTargetsByMode]' started.
+Test Case '-[BrainCoreTests.MirrorTests testTargetsByMode]' passed (0.000 seconds).
+Test Suite 'MirrorTests' passed at 2026-11-18 17:47:04.002.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.019 (0.020) seconds
+Test Suite 'SchulteTests' started at 2026-11-18 17:47:04.002.
+Test Case '-[BrainCoreTests.SchulteTests testAllModesSolvable]' started.
+Test Case '-[BrainCoreTests.SchulteTests testAllModesSolvable]' passed (0.007 seconds).
+Test Case '-[BrainCoreTests.SchulteTests testEvaluate]' started.
+Test Case '-[BrainCoreTests.SchulteTests testEvaluate]' passed (0.000 seconds).
+Test Case '-[BrainCoreTests.SchulteTests testGorbovAlternates]' started.
+Test Case '-[BrainCoreTests.SchulteTests testGorbovAlternates]' passed (0.000 seconds).
+Test Case '-[BrainCoreTests.SchulteTests testPoemHasDecoys]' started.
+Test Case '-[BrainCoreTests.SchulteTests testPoemHasDecoys]' passed (0.000 seconds).
+Test Case '-[BrainCoreTests.SchulteTests testSizesGrowWithLevel]' started.
+Test Case '-[BrainCoreTests.SchulteTests testSizesGrowWithLevel]' passed (0.000 seconds).
+Test Case '-[BrainCoreTests.SchulteTests testWrongTapCountsError]' started.
+Test Case '-[BrainCoreTests.SchulteTests testWrongTapCountsError]' passed (0.000 seconds).
+Test Suite 'SchulteTests' passed at 2026-11-18 17:47:04.010.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.008 (0.009) seconds
+Test Suite 'SortingTests' started at 2026-11-18 17:47:04.010.
+Test Case '-[BrainCoreTests.SortingTests testHiddenRuleEngine]' started.
+Test Case '-[BrainCoreTests.SortingTests testHiddenRuleEngine]' passed (0.000 seconds).
+Test Case '-[BrainCoreTests.SortingTests testHiddenTrialsUnambiguous]' started.
+Test Case '-[BrainCoreTests.SortingTests testHiddenTrialsUnambiguous]' passed (0.000 seconds).
+Test Case '-[BrainCoreTests.SortingTests testSwitchModeSwitches]' started.
+Test Case '-[BrainCoreTests.SortingTests testSwitchModeSwitches]' passed (0.000 seconds).
+Test Suite 'SortingTests' passed at 2026-11-18 17:47:04.012.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'StroopTests' started at 2026-11-18 17:47:04.012.
+Test Case '-[BrainCoreTests.StroopTests testMostlyIncongruentAtHighLevel]' started.
+Test Case '-[BrainCoreTests.StroopTests testMostlyIncongruentAtHighLevel]' passed (0.000 seconds).
+Test Case '-[BrainCoreTests.StroopTests testScorer]' started.
+Test Case '-[BrainCoreTests.StroopTests testScorer]' passed (0.000 seconds).
+Test Case '-[BrainCoreTests.StroopTests testSoundAlikes]' started.
+Test Case '-[BrainCoreTests.StroopTests testSoundAlikes]' passed (0.000 seconds).
+Test Case '-[BrainCoreTests.StroopTests testTrialsAreValid]' started.
+Test Case '-[BrainCoreTests.StroopTests testTrialsAreValid]' passed (0.001 seconds).
+Test Suite 'StroopTests' passed at 2026-11-18 17:47:04.014.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'BrainCorePackageTests.xctest' passed at 2026-11-18 17:47:04.014.
+	 Executed 35 tests, with 0 failures (0 unexpected) in 0.047 (0.052) seconds
+Test Suite 'All tests' passed at 2026-11-18 17:47:04.014.
+	 Executed 35 tests, with 0 failures (0 unexpected) in 0.047 (0.054) seconds
+◇ Test run started.
+↳ Testing Library Version: 1902
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
