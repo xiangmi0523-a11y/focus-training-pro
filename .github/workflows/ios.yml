@@ -162,6 +162,26 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+      - name: 截图与日志推送到 ci-screenshots 分支
+        if: always()
+        continue-on-error: true
+        run: |
+          rm -rf /tmp/screens && mkdir -p /tmp/screens
+          cp -R shots/. /tmp/screens/ 2>/dev/null || true
+          cp core-tests.log /tmp/screens/ 2>/dev/null || true
+          for f in sim-build.log dev-build.log; do
+            [ -f "$f" ] && grep -E "error:|warning:" "$f" | sort -u | head -300 > "/tmp/screens/${f%.log}-issues.txt" || true
+          done
+          ls -la App/Resources/Fonts > /tmp/screens/fonts.txt 2>&1 || true
+          ls -la *.ipa >> /tmp/screens/fonts.txt 2>&1 || true
+          cd /tmp/screens
+          git init -q -b ci-screenshots
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add -A
+          git commit -q -m "CI 截图 #${{ github.run_number }}"
+          git push -f -q "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" ci-screenshots
+
       - name: 发布 Release
         if: success() && (contains(github.event.head_commit.message, '[release]') || inputs.release)
         env:
