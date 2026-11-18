@@ -50,6 +50,10 @@ struct MirrorGameView: View {
                 header
                 Spacer(minLength: 0)
                 canvas
+                Button("画好了") { endRound() }
+                    .buttonStyle(GhostButtonStyle(compact: true))
+                    .disabled(left.drawn.count < 8 || right.drawn.count < 8 || showRoundScore != nil)
+                    .opacity(left.drawn.count < 8 || right.drawn.count < 8 ? 0.4 : 1)
                 Spacer(minLength: 0)
                 Caption(footerText, size: 14, weight: .regular, base: Palette.muted)
                     .padding(.bottom, 20)

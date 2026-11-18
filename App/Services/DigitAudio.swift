@@ -21,13 +21,14 @@ final class DigitAudio {
     private let format: AVAudioFormat
     private var cache: [String: AVAudioPCMBuffer] = [:]
     private var prepared = false
+    private var isShutdown = false
 
     init() {
         format = AVAudioFormat(standardFormatWithSampleRate: 44_100, channels: 1)!
     }
 
     private func prepare() {
-        guard !prepared else { return }
+        guard !prepared, !isShutdown else { return }
         prepared = true
         let session = AVAudioSession.sharedInstance()
         try? session.setCategory(.playback, mode: .spokenAudio, options: [])
@@ -65,6 +66,7 @@ final class DigitAudio {
     }
 
     func shutdown() {
+        isShutdown = true
         stop()
         engine.stop()
     }
@@ -83,6 +85,7 @@ final class DigitAudio {
             }
             return
         }
+        guard !isShutdown else { return }
         prepare()
         if !engine.isRunning { try? engine.start() }
         noise.amplitude = Float(noiseLevel) * 0.22
@@ -96,7 +99,10 @@ final class DigitAudio {
         // 先让噪音铺垫半秒
         try? await Task.sleep(nanoseconds: 500_000_000)
 
-        if rendered, let track = mix(clips: targetClips, interval: interval, offset: 0) {
+        // 渲染期间可能已经退出训练
+        guard !isShutdown else { return }
+
+        if rendered, engine.isRunning, let track = mix(clips: targetClips, interval: interval, offset: 0) {
             var distractorTrack: AVAudioPCMBuffer?
             if let distractor {
                 var clips: [AVAudioPCMBuffer] = []
@@ -105,6 +111,7 @@ final class DigitAudio {
                     distractorTrack = mix(clips: clips, interval: interval, offset: interval * 0.45)
                 }
             }
+            guard !isShutdown, engine.isRunning else { return }
             targetPlayer.volume = 1
             distractorPlayer.volume = Float(distractorVolume)
             targetPlayer.scheduleBuffer(track, at: nil, options: [], completionHandler: nil)
@@ -119,6 +126,7 @@ final class DigitAudio {
         } else {
             // 兜底：直接朗读（没有干扰声）
             for (i, d) in target.enumerated() {
+                if isShutdown { return }
                 await MainActor.run { onDigit(i) }
                 let u = AVSpeechUtterance(string: Self.digitWords[d])
                 u.voice = voice
