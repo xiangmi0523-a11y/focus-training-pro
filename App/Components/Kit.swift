@@ -9,20 +9,22 @@ struct Caption: View {
     var weight: Font.SongWeight = .bold
     var base: Color = Palette.cream
     var highlight: Color = Palette.gold
+    var alignment: TextAlignment = .center
 
     init(_ text: String, size: CGFloat = 17, weight: Font.SongWeight = .bold,
-         base: Color = Palette.cream, highlight: Color = Palette.gold) {
+         base: Color = Palette.cream, highlight: Color = Palette.gold, alignment: TextAlignment = .center) {
         self.text = text
         self.size = size
         self.weight = weight
         self.base = base
         self.highlight = highlight
+        self.alignment = alignment
     }
 
     var body: some View {
         Caption.styled(text, base: base, highlight: highlight)
             .font(.song(size, weight))
-            .multilineTextAlignment(.center)
+            .multilineTextAlignment(alignment)
             .lineSpacing(4)
     }
 

@@ -53,7 +53,7 @@ struct HomeView: View {
             Spacer()
             HStack(spacing: 14) {
                 statPill(icon: "flame.fill", value: "\(model.progress.streak())", unit: "天")
-                statPill(icon: "sparkles", value: "\(model.progress.brainIndex)", unit: "脑力")
+                statPill(icon: "sparkles", value: String(model.progress.brainIndex), unit: "脑力")
             }
         }
         .padding(.top, 8)
@@ -63,7 +63,7 @@ struct HomeView: View {
         VStack(spacing: 2) {
             HStack(spacing: 3) {
                 Image(systemName: icon).font(.system(size: 11)).foregroundColor(Palette.gold)
-                Text(value).font(.digits(17, .bold)).foregroundColor(Palette.cream)
+                Text(verbatim: value).font(.digits(17, .bold)).foregroundColor(Palette.cream)
             }
             Text(unit).font(.song(10)).foregroundColor(Palette.muted)
         }

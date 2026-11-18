@@ -53,8 +53,8 @@ struct SettingsView: View {
                                 VStack(alignment: .leading, spacing: 3) {
                                     Text(k.title).font(.song(14, .bold)).foregroundColor(Palette.cream)
                                     Text(k.citation).font(.song(11)).foregroundColor(Palette.muted)
-                                    Caption(k.benefit, size: 12, weight: .regular, base: Palette.faint, highlight: Palette.goldDeep)
-                                        .multilineTextAlignment(.leading)
+                                    Caption(k.benefit, size: 12, weight: .regular, base: Palette.faint,
+                                            highlight: Palette.goldDeep, alignment: .leading)
                                 }
                             }
                         }

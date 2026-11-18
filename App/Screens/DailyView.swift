@@ -98,7 +98,7 @@ struct DailyView: View {
             HStack {
                 Button { shift(-1) } label: { Image(systemName: "chevron.left") }
                 Spacer()
-                Text("\(comps.year ?? 0)年\(comps.month ?? 1)月").font(.song(16, .bold)).foregroundColor(Palette.cream)
+                Text(verbatim: "\(comps.year ?? 0)年\(comps.month ?? 1)月").font(.song(16, .bold)).foregroundColor(Palette.cream)
                 Spacer()
                 Button { shift(1) } label: { Image(systemName: "chevron.right") }
             }

@@ -135,7 +135,7 @@ struct StroopGameView: View {
             }
             VStack(spacing: 2) {
                 Text(word.name)
-                    .font(.song(30, .bold))
+                    .font(.song(36, .bold))
                     .foregroundColor(Palette.inkColor(ink))
                 if isDone, let resp {
                     Text(cue == .color ? ink.name : word.name)
@@ -144,7 +144,7 @@ struct StroopGameView: View {
                 }
             }
         }
-        .frame(height: 74)
+        .frame(height: 96)
         .opacity(isDone ? 0.38 : 1)
         .scaleEffect(isCurrent ? 1.04 : 1)
     }
@@ -208,7 +208,8 @@ struct StroopGameView: View {
     // MARK: 按钮
 
     private var answerButtons: some View {
-        let cols = Array(repeating: GridItem(.flexible(), spacing: 10), count: config.buttonCount <= 4 ? config.buttonCount : 3)
+        let n = config.buttonCount
+        let cols = Array(repeating: GridItem(.flexible(), spacing: 8), count: n == 6 ? 3 : n)
         return LazyVGrid(columns: cols, spacing: 10) {
             ForEach(buttonOrder, id: \.self) { idx in
                 Button { answer(idx) } label: { buttonLabel(idx) }
@@ -240,7 +241,7 @@ struct StroopGameView: View {
         default:
             let c = config.colors[idx]
             Text(c.name)
-                .font(.song(22, .bold))
+                .font(.song(config.buttonCount >= 5 ? 19 : 22, .bold))
                 .foregroundColor(Palette.cream)
                 .frame(maxWidth: .infinity).frame(height: 58)
                 .background(RoundedRectangle(cornerRadius: 12).fill(Palette.inkColor(c).opacity(0.85)))

@@ -9,7 +9,9 @@ struct TrainingDetailView: View {
 
     private var mode: ModeID {
         if let s = selected, model.progress.isUnlocked(s) { return s }
-        return model.progress.unlockedModes(kind).last ?? kind.modes[0]
+        if let recent = model.progress.sessions(of: kind).last(where: { $0.mode != .storyDelayed })?.mode,
+           model.progress.isUnlocked(recent) { return recent }
+        return kind.modes[0]
     }
 
     var body: some View {
@@ -40,6 +42,7 @@ struct TrainingDetailView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 CitationTag(text: kind.citation)
@@ -165,7 +168,7 @@ struct TrainingDetailView: View {
         }
         .buttonStyle(GoldButtonStyle())
         .padding(.horizontal, 22)
-        .padding(.bottom, 12)
+        .padding(.bottom, 8)
         .background(
             LinearGradient(colors: [Palette.ink.opacity(0), Palette.ink.opacity(0.95)], startPoint: .top, endPoint: .bottom)
                 .frame(height: 120)

@@ -33,7 +33,7 @@ struct StatsView: View {
             HStack(alignment: .firstTextBaseline) {
                 Text("脑力指数").font(.song(15, .bold)).foregroundColor(Palette.cream)
                 Spacer()
-                Text("\(model.progress.brainIndex)").font(.digits(30, .bold)).foregroundStyle(Palette.goldGradient)
+                Text(verbatim: "\(model.progress.brainIndex)").font(.digits(30, .bold)).foregroundStyle(Palette.goldGradient)
                 Text("/ 1000").font(.song(11)).foregroundColor(Palette.muted)
             }
             RadarChart(values: values, labels: TrainingKind.allCases.map(\.dimension))

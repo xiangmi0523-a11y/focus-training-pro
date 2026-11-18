@@ -66,8 +66,7 @@ struct SchulteGameView: View {
     private var header: some View {
         HStack(alignment: .center) {
             VStack(alignment: .leading, spacing: 8) {
-                Caption(instruction, size: 14, weight: .regular, base: Palette.muted)
-                    .multilineTextAlignment(.leading)
+                Caption(instruction, size: 14, weight: .regular, base: Palette.muted, alignment: .leading)
                 HStack(spacing: 8) {
                     Text("目标").font(.song(12)).foregroundColor(Palette.muted)
                     Text(String(format: "%.1f 秒", config.targetTime)).font(.song(14, .bold)).foregroundColor(Palette.gold)

@@ -6,6 +6,8 @@ import Foundation
 /// - 鸡尾酒会模式再叠一条降调、偏到另一侧的干扰声音
 /// - 背景是程序合成的「人群嘈杂声」
 final class DigitAudio {
+    /// 截图演示时不出声（CI 模拟器没有声卡）
+    static let muted = ProcessInfo.processInfo.arguments.contains("-demoNoAudio")
     static let digitWords = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"]
 
     private let engine = AVAudioEngine()
@@ -74,6 +76,13 @@ final class DigitAudio {
     /// 播放一组数字。onDigit(i) 在第 i 个目标数字开始时回调（主线程）
     func play(target: [Int], distractor: [Int]?, interval: Double, noiseLevel: Double,
               distractorVolume: Double, rate: Float, onDigit: @escaping (Int) -> Void) async {
+        if Self.muted {
+            for i in target.indices {
+                await MainActor.run { onDigit(i) }
+                try? await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
+            }
+            return
+        }
         prepare()
         if !engine.isRunning { try? engine.start() }
         noise.amplitude = Float(noiseLevel) * 0.22
@@ -124,6 +133,7 @@ final class DigitAudio {
 
     /// 预先渲染 0–9，第一轮不卡顿
     func warmUp(rate: Float) async {
+        guard !Self.muted else { return }
         prepare()
         for d in 0...9 { _ = await clip(d, rate: rate) }
     }
@@ -140,11 +150,14 @@ final class DigitAudio {
         let collector = BufferCollector()
         let buffers: [AVAudioPCMBuffer] = await withCheckedContinuation { cont in
             collector.continuation = cont
-            renderSynth.write(utterance) { buffer in
-                if let pcm = buffer as? AVAudioPCMBuffer, pcm.frameLength > 0 {
-                    collector.append(pcm)
-                } else {
-                    collector.finish()
+            let synth = renderSynth
+            DispatchQueue.main.async {
+                synth.write(utterance) { buffer in
+                    if let pcm = buffer as? AVAudioPCMBuffer, pcm.frameLength > 0 {
+                        collector.append(pcm)
+                    } else {
+                        collector.finish()
+                    }
                 }
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) { collector.finish() }

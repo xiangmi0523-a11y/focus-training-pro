@@ -85,18 +85,22 @@ struct GameTopBar: View {
                     .background(Circle().fill(Palette.ink.opacity(0.7)))
                     .overlay(Circle().stroke(Palette.line, lineWidth: 0.8))
             }
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 6) {
                     Text(mode.kind.title).font(.song(16, .bold)).foregroundColor(Palette.cream)
-                    Text("· \(mode.title)").font(.song(13)).foregroundColor(Palette.muted)
+                        .lineLimit(1).fixedSize()
+                    Text("· \(mode.title)").font(.song(13)).foregroundColor(Palette.muted).lineLimit(1)
+                    Spacer(minLength: 0)
+                    if let step { Text("每日 \(step)").font(.song(11, .bold)).foregroundColor(Palette.goldDeep) }
                 }
-                HStack(spacing: 6) {
+                HStack(spacing: 8) {
                     LevelChip(level: level)
-                    if let step { Text("每日 \(step)").font(.song(11)).foregroundColor(Palette.goldDeep) }
+                    CitationTag(text: mode.kind.citation)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                    Spacer(minLength: 0)
                 }
             }
-            Spacer()
-            CitationTag(text: mode.kind.citation)
         }
         .padding(.horizontal, 16)
         .padding(.top, 10)

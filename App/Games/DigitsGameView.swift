@@ -101,43 +101,23 @@ struct DigitsGameView: View {
     // MARK: 场景：戴耳机的人 + 嘈杂人群 + 声波
 
     private var listenerScene: some View {
-        ZStack {
-            HStack(spacing: 26) {
-                ForEach(0..<6, id: \.self) { i in
-                    VStack(spacing: 2) {
-                        Image(systemName: "ellipsis.bubble.fill")
-                            .font(.system(size: 14))
-                            .foregroundColor(Palette.ink3)
-                            .offset(x: i % 2 == 0 ? 6 : -6)
-                        Image(systemName: "person.fill")
-                            .font(.system(size: 34))
-                            .foregroundColor(Palette.ink3.opacity(0.9))
-                    }
-                    .offset(y: CGFloat((i * 17) % 22))
-                    .opacity(phase == .listening ? 1 : 0.5)
-                }
-            }
-            .offset(y: 60)
-
-            VStack(spacing: 18) {
+        let compact = phase == .input || phase == .feedback
+        return ZStack(alignment: .bottom) {
+            CrowdBackdrop(active: phase == .listening)
+                .opacity(compact ? 0.35 : 1)
+                .offset(y: compact ? 30 : 0)
+            VStack(spacing: compact ? 6 : 14) {
                 WaveLine(active: phase == .listening, highlight: activeDigit, count: sequence.count)
-                    .frame(height: 60)
+                    .frame(height: compact ? 36 : 60)
                 ZStack {
-                    Circle().fill(Palette.gold.opacity(phase == .listening ? 0.18 : 0.06)).frame(width: 110, height: 110)
-                        .blur(radius: 10)
-                    Image(systemName: "person.fill")
-                        .font(.system(size: 64))
-                        .foregroundStyle(LinearGradient(colors: [Palette.blue, Color(hex: 0x3A5A82)], startPoint: .top, endPoint: .bottom))
-                        .offset(y: 6)
-                    Image(systemName: "headphones")
-                        .font(.system(size: 52, weight: .light))
-                        .foregroundStyle(Palette.goldGradient)
-                        .offset(y: -14)
+                    Circle().fill(Palette.gold.opacity(phase == .listening ? 0.16 : 0.05))
+                        .frame(width: 150, height: 150)
+                        .blur(radius: 14)
+                    ListenerFigure(size: compact ? 96 : 150)
                 }
-                .frame(height: 110)
-                .scaleEffect(phase == .input || phase == .feedback ? 0.75 : 1)
             }
         }
+        .frame(maxWidth: .infinity)
         .clipped()
     }
 

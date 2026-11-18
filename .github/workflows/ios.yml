@@ -109,7 +109,7 @@ jobs:
             t 40 xcrun simctl io "$UDID" screenshot "shots/$name.png" >/dev/null 2>&1 || echo "截图失败 $name"
             echo "$name $(date +%T)"
           }
-          shot 00-launch 2.2
+          shot 00-launch 1.1
           shot 01-home 3 -demo home -demoData
           shot 02-detail-schulte 3 -demo detail -demoKind schulte -demoData
           shot 03-detail-story 3 -demo detail -demoKind story -demoData
@@ -125,7 +125,8 @@ jobs:
           shot 15-stroop-direction 5 -demo game -demoMode stroopDirection -demoData
           shot 20-memory 6 -demo game -demoMode memoryOrdered -demoData
           shot 21-memory-change 6 -demo game -demoMode memoryChange -demoData
-          shot 30-digits 6 -demo game -demoMode digitsCocktail -demoData
+          shot 30-digits 6 -demo game -demoMode digitsCocktail -demoData -demoNoAudio
+          shot 31-digits-input 13 -demo game -demoMode digitsForward -demoData -demoNoAudio
           shot 40-mirror 5 -demo game -demoMode mirrorSymmetric -demoData
           shot 41-rhythm 6 -demo game -demoMode mirrorRhythm -demoData
           shot 50-sort 5 -demo game -demoMode sortSwitch -demoData
